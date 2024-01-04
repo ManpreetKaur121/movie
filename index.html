@@ -3,9 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Movie App</title>
+    <style>
+body{
+    background-image:url(https://images.pexels.com/photos/956999/milky-way-starry-sky-night-sky-star-956999.jpeg?cs=srgb&dl=pexels-felix-mittermeier-956999.jpg&fm=jpg&_gl=1*f3qg8t*_ga*NzMwMjA3NzEuMTcwNDM1NDk1Mg..*_ga_8JE65Q40S6*MTcwNDM1NDk1Mi4xLjAuMTcwNDM1NDk1Mi4wLjAuMA..);
+}
+#searchbar{
+    display: flex;
+   justify-content: space-evenly;
+}
+#searchbar>div{
+  
+    color:antiquewhite;
+   font-family: PlusJakartaSans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Cantarell, "Helvetica Neue", Ubuntu, sans-serif;
+   font-weight: 600;
+   font-size: 40px;
+   margin-top: 30px;
+   margin-left: 50px;
+}
+#searchbar>input{
+    width: 300px;
+    height: 30px;
+    margin-top: 40px;
+    margin-right: 190px;
+   border-radius: 15px;
+}
+#show{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap:20px;
+    width:100%;
+    height:160px;
+    color:aliceblue;
+    margin-top: 30px;
+
+   }
+   #show>div{
+    border: 2px solid antiquewhite;
+    border-radius: 10px;
+    font-size: 30px;
+    height: 550px;
+   }
+#show>div>img{
+    height:350px;
+    width: 100%;
+}
+    </style>
 </head>
 <body>
-    
+    <div id="searchbar">
+    <div>SEARCH MOVIE NAME</div>
+    <input type="text" placeholder="Search..." id="query">
+    </div>
+    <div id="show">
+
+    </div>
 </body>
 </html>
+<script>
+let query=document.getElementById("query")
+
+ async  function FetchData(q=""){
+    try{
+     let data=  await fetch(`http://www.omdbapi.com/?s=${q}&apikey=e5471323`)
+     let res=  await data.json()
+      console.log(res)
+     showData(res.Search)
+     
+    }
+    catch(err){
+        console.log("something went wrong")
+    }
+} 
+function showData(data){
+let maincard=document.getElementById("show")
+
+data.forEach((el)=>{
+    let card=document.createElement("div")
+    let pic=document.createElement("img")
+    pic.src=el.Poster
+    let title=document.createElement("h3")
+    title.textContent=el.Title
+    let year=document.createElement("p")
+    year.textContent=el.Year
+   
+   
+    card.append(pic,title,year)
+  maincard.append(card)
+ 
+})
+return maincard;
+
+}
+
+let timerid;
+ function handleDebounce(func,delay){
+    let q=query.value
+   if(timerid){
+    clearTimeout(timerid)
+   }
+ timerid=setTimeout(function(){
+   FetchData(q)
+    console.log("hello")
+ },2000)
+}
+
+query.addEventListener("input",handleDebounce)
+
+
+
+</script>
